@@ -18,6 +18,7 @@ A FastAPI server with public endpoints for healthcare management system.
 
 - Python 3.8 or higher
 - pip (Python package installer)
+- SAM Model Checkpoint (sam_vit_b_01ec64.pth) stored locally in model/
 
 ### Installation
 
@@ -47,121 +48,34 @@ Once the server is running, you can access:
 - **Interactive API Docs (Swagger UI)**: http://localhost:8000/docs
 - **Alternative API Docs (ReDoc)**: http://localhost:8000/redoc
 
-## Available Endpoints
+## API Endpoint 
+## POST /upload_img_and_roi
+## Description
+Processes a wound image and ROI points, returning the maximum contour coordinates and wound RYB composition.
 
-### Root & Health
-- `GET /` - Welcome message and API info
-- `GET /health` - Health check endpoint
-- `GET /stats` - API statistics
-
-### Patients
-- `GET /patients` - Get all patients
-- `GET /patients/{patient_id}` - Get specific patient
-- `POST /patients` - Create new patient
-- `PUT /patients/{patient_id}` - Update patient
-- `DELETE /patients/{patient_id}` - Delete patient
-
-### Appointments
-- `GET /appointments` - Get all appointments
-- `GET /appointments/{appointment_id}` - Get specific appointment
-- `POST /appointments` - Create new appointment
-- `PUT /appointments/{appointment_id}` - Update appointment
-- `DELETE /appointments/{appointment_id}` - Delete appointment
-
-### Utility
-- `GET /patients/{patient_id}/appointments` - Get appointments for specific patient
-
-## Example Usage
-
-### Creating a Patient
-
-```bash
-curl -X POST "http://localhost:8000/patients" \
-     -H "Content-Type: application/json" \
-     -d '{
-       "name": "John Doe",
-       "age": 35,
-       "email": "john.doe@email.com",
-       "phone": "+1234567890",
-       "diagnosis": "Hypertension"
-     }'
-```
-
-### Creating an Appointment
-
-```bash
-curl -X POST "http://localhost:8000/appointments" \
-     -H "Content-Type: application/json" \
-     -d '{
-       "patient_id": 1,
-       "doctor_name": "Dr. Smith",
-       "appointment_date": "2024-01-15",
-       "appointment_time": "14:30",
-       "reason": "Follow-up consultation"
-     }'
-```
-
-### Getting All Patients
-
-```bash
-curl -X GET "http://localhost:8000/patients"
-```
-
-## Data Models
-
-### Patient
-```json
-{
-  "id": 1,
-  "name": "John Doe",
-  "age": 35,
-  "email": "john.doe@email.com",
-  "phone": "+1234567890",
-  "diagnosis": "Hypertension",
-  "created_at": "2024-01-10T10:30:00"
-}
-```
-
-### Appointment
-```json
-{
-  "id": 1,
-  "patient_id": 1,
-  "doctor_name": "Dr. Smith",
-  "appointment_date": "2024-01-15",
-  "appointment_time": "14:30",
-  "reason": "Follow-up consultation",
-  "status": "scheduled",
-  "created_at": "2024-01-10T10:30:00"
-}
-```
+## INPUT
+| Parameter    | Type   | Location  | Description                  |
+| ------------ | ------ | --------- | ---------------------------- |
+| `image`      | file   | form-data | Wound image (JPEG/PNG)       |
+| `roi_points` | string | form-data | JSON list of ROI coordinates |
 
 ## Development
 
 ### Project Structure
 ```
 Fastcare/
-├── main.py              # Main FastAPI application
-├── requirements.txt     # Python dependencies
-└── README.md           # This file
+├── main.py                # FastAPI application
+├── sam_utils.py           # SAM mask, contour, and RYB utilities
+├── requirements.txt       # Python dependencies
+├── model/
+│   └── sam_vit_b_01ec64.pth # SAM checkpoint
+└── README.md
 ```
-
-### Adding New Endpoints
-
-1. Define Pydantic models for request/response validation
-2. Create endpoint functions with appropriate HTTP methods
-3. Add proper error handling with HTTPException
-4. Update this README with new endpoint documentation
 
 ## Notes
 
-- This is a demo application using in-memory storage
-- In production, you should use a proper database (PostgreSQL, MongoDB, etc.)
-- Add authentication and authorization for production use
-- Implement proper logging and monitoring
-- Add input validation and sanitization
-- Consider rate limiting for public endpoints
+The SAM model file is large (357 MB) and is not pushed to GitHub. Store it locally or use cloud storage in deployment.
 
-## License
+For Render deployment, store the model in a mounted volume or download it at startup.
 
-This project is open source and available under the MIT License.
+Ensure enough RAM/CPU in hosting for SAM inference.
