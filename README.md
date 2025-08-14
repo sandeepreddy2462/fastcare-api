@@ -1,16 +1,20 @@
-# FastCare API
-
-A FastAPI server with public endpoints for healthcare management system.
+## FastCare Wound Analysis API
+A FastAPI server for processing wound images and ROI (Region of Interest) data, running SAM (Segment Anything Model) to extract contours and compute wound composition in Red, Yellow, and Black (RYB) values.
 
 ## Features
+Image Upload: Accepts wound images via POST request.
 
-- **Patient Management**: CRUD operations for patient records
-- **Appointment Management**: CRUD operations for appointments
-- **RESTful API**: Full REST API with proper HTTP status codes
-- **Auto-generated Documentation**: Interactive API docs with Swagger UI
-- **CORS Support**: Cross-origin resource sharing enabled
-- **Data Validation**: Pydantic models for request/response validation
-- **Health Check**: Built-in health monitoring endpoint
+ROI Handling: Accepts ROI points in JSON format.
+
+SAM Segmentation: Uses a preloaded SAM model for mask prediction.
+
+Contour Extraction: Finds the maximum wound contour.
+
+Color Composition: Calculates RYB wound composition percentages.
+
+CORS Enabled: Allows cross-origin API calls.
+
+Auto API Docs: Swagger & ReDoc available.
 
 ## Quick Start
 
