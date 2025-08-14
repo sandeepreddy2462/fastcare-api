@@ -3,9 +3,9 @@ uvicorn[standard]==0.24.0
 pydantic==2.5.0
 python-multipart==0.0.6
 requests==2.31.0
-torch
+torch==2.1.0+cpu --index-url https://download.pytorch.org/whl/cpu
+torchvision==0.16.1+cpu --index-url https://download.pytorch.org/whl/cpu
 numpy
 opencv-python
-git+https://github.com/facebookresearch/segment-anything.git
 Pillow
-torchvision
+git+https://github.com/facebookresearch/segment-anything.git@main
